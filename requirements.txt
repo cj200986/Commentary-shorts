@@ -1,0 +1,7 @@
+requests
+python-dotenv
+gTTS
+openai-whisper
+anthropic
+google-auth-oauthlib
+google-api-python-client
