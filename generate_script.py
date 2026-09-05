@@ -1,6 +1,7 @@
 """
 Turns a topic into a punchy 30-60 second commentary script.
-Uses Anthropic's API if ANTHROPIC_API_KEY is set, otherwise falls back to OpenAI.
+Uses a manually-pasted script (MANUAL_SCRIPT) if provided — free, no API cost.
+Falls back to Anthropic/OpenAI API only if MANUAL_SCRIPT is empty and a key is set.
 """
 import os
 
@@ -18,6 +19,10 @@ Rules:
 """
 
 def generate_script(topic: str) -> str:
+    manual_script = os.getenv("MANUAL_SCRIPT", "").strip()
+    if manual_script:
+        return manual_script
+
     prompt = PROMPT_TEMPLATE.format(topic=topic)
 
     if os.getenv("ANTHROPIC_API_KEY"):
@@ -42,7 +47,9 @@ def generate_script(topic: str) -> str:
 
     else:
         raise RuntimeError(
-            "No API key found. Set ANTHROPIC_API_KEY or OPENAI_API_KEY in your .env file."
+            "No script provided and no API key found. Either paste a script "
+            "into the 'script' input when running the workflow, or set "
+            "ANTHROPIC_API_KEY / OPENAI_API_KEY."
         )
 
 
