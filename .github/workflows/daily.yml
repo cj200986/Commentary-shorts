@@ -3,7 +3,16 @@ name: Daily AI Short
 on:
   schedule:
     - cron: "0 15 * * *"   # runs daily at 15:00 UTC — edit to your preferred time
-  workflow_dispatch: {}     # lets you trigger it manually from the Actions tab too
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: 'Describe the clip/topic for today'
+        required: false
+        default: ''
+      script:
+        description: 'Paste your finished script here (leave blank to auto-generate)'
+        required: false
+        default: ''
 
 jobs:
   build-short:
@@ -26,6 +35,8 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          MANUAL_TOPIC: ${{ github.event.inputs.topic }}
+          MANUAL_SCRIPT: ${{ github.event.inputs.script }}
         run: python main.py
 
       # Uncomment once you've set up OAuth (see README) and added
@@ -33,9 +44,3 @@ jobs:
       # file contents, written out as files here before running with --upload.
       # - name: Run pipeline with upload
       #   run: python main.py --upload
-
-      - name: Upload output as build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: short-video
-          path: output/*.mp4
