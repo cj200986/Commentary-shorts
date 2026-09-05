@@ -2,7 +2,7 @@ name: Daily AI Short
 
 on:
   schedule:
-    - cron: "0 15 * * *"   # runs daily at 15:00 UTC — edit to your preferred time
+    - cron: "0 15 * * *"
   workflow_dispatch:
     inputs:
       topic:
@@ -39,8 +39,8 @@ jobs:
           MANUAL_SCRIPT: ${{ github.event.inputs.script }}
         run: python main.py
 
-      # Uncomment once you've set up OAuth (see README) and added
-      # CLIENT_SECRET_JSON / TOKEN_JSON as repo secrets containing the
-      # file contents, written out as files here before running with --upload.
-      # - name: Run pipeline with upload
-      #   run: python main.py --upload
+      - name: Upload output as build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: short-video
+          path: output/*.mp4
